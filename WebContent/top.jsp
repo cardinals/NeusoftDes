@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
 <HTML xmlns="http://www.w3.org/1999/xhtml">
 <HEAD id=Head1>
@@ -56,12 +56,12 @@ P {
 									<TD align=right height=35></TD>
 								</TR>
 								<TR>
-									<TD height=35 align="right">
-										当前用户：XXXX
-										&nbsp;&nbsp;&nbsp;&nbsp;
-										<A href="#" target=_top><FONT color=red>修改密码</FONT></A>
-										&nbsp;&nbsp;&nbsp;&nbsp;
-										<A href="#" target=_top><FONT color=red>安全退出</FONT></A>
+									<TD height=35 align="right">当前用户：XXXX
+										&nbsp;&nbsp;&nbsp;&nbsp; <A href="#" target=_top><FONT
+											color=red>修改密码</FONT></A> &nbsp;&nbsp;&nbsp;&nbsp; <A
+										href="${pageContext.request.contextPath}/user_exit.action"
+										target=_top> <FONT color=red>安全退出</FONT>
+									</A> <!-- <A href="#" target=_top><FONT color=red>安全退出</FONT></A> -->
 									</TD>
 								</TR>
 							</TBODY>
@@ -74,7 +74,3 @@ P {
 	</FORM>
 </BODY>
 </HTML>
-
-
-</body>
-</html>

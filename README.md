@@ -434,11 +434,340 @@
 				<property name="userDao" ref="userDao"/>
 			</bean>
 
-	- dao 要完成 **“增删改查” **，就需要模版注入。
+	- dao 要完成 **“增删改查”**，就需要模版注入。
 
 			<bean id="userDao" class="dao.UserDaoImpl">
 				<property name="sessionFactory" ref="sessionFactory"/>
 			</bean>
+
+----
+
+## 四、用户模块-注册功能（登录名校验）
+
+1. 编辑 **register.jsp** 页面。
+
+		<!-- 引入 jQuery 库 -->
+		<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.4.4.min.js"></script>
+
+
+		<form action="${pageContext.request.contextPath}/user_regist.action"
+			method="post" onsubmit="return checkForm()">
+	
+			<div class="main">
+				<div class="mainin">
+					<div class="mainin1">
+						<ul>
+							<li><span>用户名：</span> <input name="user_name" type="text"
+								id="user_name" onblur="checkCode()" class="SearchKeyword" /> <span
+								id="userNameSpan" style="FONT-WEIGHT: bold; COLOR: red"></span></li>
+							<li><span>密码：</span> <input type="password"
+								name="user_password" id="user_password" class="SearchKeyword2" />
+								<span id="passwordSpan" style="FONT-WEIGHT: bold; COLOR: red"></span>
+							</li>
+							<li><button class="tijiao" type="submit">马上注册</button></li>
+						</ul>
+					</div>
+					<div class="footpage">
+						<span style="" font-family:arial;""="">Copyright ?</span>2018 <a
+							href="http://www.baidu.com/" target="_blank">客户信息管理平台</a> － 也许很好用
+					</div>
+				</div>
+			</div>
+		</form>
+
+2. 编辑 **UserAction** 类，添加 **checkCode()** 方法。
+
+	因为我们是模型注入方式，所以我们不需要再接收数据了，因为模型已经自动帮我们封装好数据了，直接调用 service 层来操作即可。
+
+		/** 通过登录名，判断，登录名是否已经存在 */
+		public String checkCode(){
+
+			// 调用业务层，查询
+			User u = userService.checkCode(user.getUser_code());
+
+			// 获取response对象
+			HttpServletResponse response = ServletActionContext.getResponse();
+			response.setContentType("text/html;charset=UTF-8");
+
+			try {
+				// 获取输出流
+				PrintWriter writer = response.getWriter();
+
+				// 进行判断
+				if(u != null){
+					// 说明：登录名查询到用户了，说明登录已经存在了，不能注册
+					writer.print("no");
+				}else{
+					// 说明，不存在登录名，可以注册
+					writer.print("yes");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}			
+			return NONE;
+		}
+
+3. 编辑 **UserServiceImpl** 类，添加 **checkCode()** 方法。
+
+		/*
+		 * 通过登录名进行验证
+		 */
+		@Override
+		public User checkCode(String user_code) {
+			return userDao.checkCode(user_code);
+		}	
+
+4. 编辑 **UserDaoImpl** 类，添加 **checkCode()** 方法。
+
+		/*
+		 * 通过登录名进行验证
+		 */
+		@Override
+		public User checkCode(String user_code) {
+			List<User> list = (List<User>) this.getHibernateTemplate().find("from User where user_code = ?", user_code);
+	
+			if (list != null && list.size() > 0) {
+				return list.get(0);
+			}
+			return null;
+		}
+
+5. 阻止表单提交。
+
+	给表单添加 **onsubmit** 事件。
+
+		// 可以阻止表单的提交
+		function checkForm(){
+
+			// 先让校验名称的方法先执行以下
+			checkCode();	
+	
+			// 获取 error 的数量，如果数量 > 0，说明存在错误，不能提交表单
+			if($(".error").size() > 0){
+				return false;
+			}
+		}
+
+6. **MD5Utils** 工具类
+
+		package com.devyy.utils;
+		
+		import java.math.BigInteger;
+		import java.security.MessageDigest;
+		import java.security.NoSuchAlgorithmException;
+		
+		public class MD5Utils {
+			/**
+			 * 使用 md5 的算法进行加密
+			 */
+			public static String md5(String plainText) {
+				
+				byte[] secretBytes = null;
+				
+				try {
+					secretBytes = MessageDigest.getInstance("md5").digest(
+							plainText.getBytes());
+					
+				} catch (NoSuchAlgorithmException e) {
+					throw new RuntimeException("没有md5这个算法！");
+				}
+				
+				String md5code = new BigInteger(1, secretBytes).toString(16);	// 16进制数字
+				
+				// 如果生成数字未满 32 位，需要前面补 0
+				for (int i = 0; i < 32 - md5code.length(); i++) {
+					md5code = "0" + md5code;
+				}
+				
+				return md5code;
+			}
+		}
+
+## 五、用户模块-注册功能（功能实现）
+
+1. 编辑 **UserAction** 类的 **regist()** 方法。
+
+		/*
+		 * 注册功能
+		 */
+		public String regist() {
+			// 接收请求参数
+			userService.save(user);
+			return LOGIN;
+		}
+
+2. 编辑 **UserServiceImpl** 类的 **save()** 方法。
+
+		/**
+		 * 注册用户
+		 */
+		@Override
+		public void save(User user) {		
+			// 如果要给密码加密，则需要先获取，加密了之后，再存储
+			String pass = user.getUser_password();
+			// 使用 md5 进行加密
+			String passPlus = MD5Utils.md5(pass);
+			// 把加密后的密码重新赋值
+			user.setUser_password(passPlus);
+			
+			// 设置用户的 Code 值
+			user.setUser_code("admin");
+			
+			// 设置用户的状态
+			user.setUser_state("1");
+			
+			// 调用 dao 执行数据库交互
+			userDao.save(user);
+			
+			/*
+			 * DataIntegrityViolationException 数据完整性异常，要去看数据表是否有 not null 约束，如果有，必须要给值
+			 */		
+		}
+
+3. 编辑 **UserDaoImpl** 类的 **save()** 方法。
+
+		/*
+		 * 保存用户 
+		 */
+		@Override
+		public void save(User user) {
+			this.getHibernateTemplate().save(user);
+		}
+
+4. 编辑 **struts.xml** 文件。
+
+		<!-- 配置全局的结果页面 -->
+		<global-results>
+			<result name="login" type="redirect">/login.jsp</result>
+		</global-results>
+
+5. **web.xml** 文件中配置异常处理
+
+		<welcome-file-list>
+			<welcome-file>login.jsp</welcome-file>
+		</welcome-file-list>
+	
+		<error-page>
+			<error-code>500</error-code>
+			<location>/jsp/error.jsp</location>
+		</error-page>
+
+## 六、用户模块-登录和退出功能
+
+### 【登录实现】
+
+1. 编辑 **login.jsp** 登录页面。
+
+	修改控件 name 属性值。
+		
+	登录名 → user_code；
+
+	密码 → user_password。
+		
+	提交按钮，删掉它的 onclick 属性。
+		
+	修改表单的 action 属性值，
+
+		action="${ pageContext.request.contextPath }/user_login.action"
+
+2. 编辑 **UserAction** 类，添加 **login()** 方法。
+
+
+		/*
+		 * 登录功能
+		 */
+		public String login() {
+	
+			// 1. 调用 service
+			User exsitUser = userService.login(user);
+	
+			// 2. 判断 exsitUser 是否为空
+			if (exsitUser == null) {
+				System.out.println("用户名或密码不正确，检查后再登录...");
+				return LOGIN;
+			} else {
+				// 如果登录成功，则需要把用户的实例放在 session 域中
+				// 其他页面也能共享当前用户数据
+				ServletActionContext.getRequest().getSession().setAttribute("exsitUser", exsitUser);
+	
+				// 如果登录成功了之后，我们应该是去首页
+				return "loginOK";
+			}
+		}
+
+3. **struts.xml** 文件	
+
+		<!-- 配置用户的模块 -->
+		<action name="user_*" class="userAction" method="{1}">
+			<result name="loginOK" type="redirect">/index.jsp</result>
+		</action>
+
+4. 编辑 **UserServiceImpl** 类，添加 **lgoin() **方法。
+
+		/* 
+		 * 用户登录
+		 */
+		@Override
+		public User login(User user) {
+			
+			// 小问题：我们注册的时候，密码是加密过的，
+			// 如果此时需要把用户名和密码都拿出来做比对的话，
+			// 需要先将密码进行解析出来，才能进行比对
+			String pass = user.getUser_password();
+			
+			// 重新加密一次 == 解密
+			user.setUser_password(MD5Utils.md5(pass));
+			
+			// 调用 Dao 
+			return userDao.login(user);
+		}
+
+5. 编辑 **UserDaoImpl** 类，添加 **login()** 方法。
+
+		/*
+		 * 登录功能，通过用户名和密码和用户的状态
+		 */
+		@Override
+		public User login(User user) {
+	
+			// QBC的查询，按条件进行查询
+			DetachedCriteria criteria = DetachedCriteria.forClass(User.class);
+			
+			// 拼接查询的条件
+			// criteria.add(Restrictions.eq("user_code", user.getUser_code()));
+			criteria.add(Restrictions.eq("user_password", user.getUser_password()));
+			criteria.add(Restrictions.eq("user_state", "1"));
+			
+			// 查询
+			List<User> list = (List<User>) this.getHibernateTemplate().findByCriteria(criteria);
+			
+			if(list != null && list.size() > 0){
+				return list.get(0);
+			}
+			return null;
+		}
+
+### 【退出实现】
+
+1. 编辑 **top.jsp** 页面。
+
+	当前用户：${ existUser.user_name }
+
+		<a href="${ pageContext.request.contextPath }/user_exit.action" target=_top>
+			<font color=red>安全退出</font>
+		</a>
+	
+2. 编辑 **UserAction** 类，添加 **exit()** 方法。
+
+		/*
+		 * 退出功能
+		 */
+		public String exit() {
+			ServletActionContext.getRequest().getSession().removeAttribute("existUser");
+			return LOGIN;
+		}
+
+---
 
 
 

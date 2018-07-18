@@ -9,7 +9,34 @@
 </head>
 <body>
 
-	<div class="main">
+<form action="${pageContext.request.contextPath}/user_login.action" method="post">
+		<div class="main">
+			<div class="mainin">
+				<div class="mainin1">
+					<ul>
+						<li>
+							<span>用户名：</span>
+							<input name="user_name" type="text" id="user_name" placeholder="登录名" class="SearchKeyword"/>
+						</li>
+						<li>
+							<span>密码：</span>
+							<input type="password" name="user_password" id="user_password" placeholder="密码" class="SearchKeyword2"/></li>
+						<li>
+							<button class="tijiao" type="submit">马上登录</button>
+							<a href="${pageContext.request.contextPath}/register.jsp">
+								<font color="orange">我要注册</font>
+							</a>						
+						</li>
+					</ul>
+				</div>
+				<div class="footpage">
+					<span style="" font-family:arial;""="">Copyright ?</span>2018 <a
+						href="http://www.baidu.com/" target="_blank">客户信息管理平台</a> － 也许很好用
+				</div>
+			</div>
+		</div>
+	</form>
+	<!-- <div class="main">
 		<div class="mainin">
 			<div class="mainin1">
 				<ul>
@@ -25,7 +52,7 @@
 					href="http://www.baidu.com/" target="_blank">客户信息管理平台</a> － 也许很好用
 			</div>
 		</div>
-	</div>
+	</div> -->
 	<img src="images/loading.gif" id="loading"
 		style="display: none; position: absolute;" />
 	<div id="POPLoading" class="cssPOPLoading">

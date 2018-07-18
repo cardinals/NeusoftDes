@@ -2,8 +2,10 @@ package com.devyy.domain;
 
 import java.io.Serializable;
 
-public class User implements Serializable{
-	
+public class User implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	// Ö÷¼ü
 	private Long user_id;
 	// µÇÂ¼Ãû³Æ
