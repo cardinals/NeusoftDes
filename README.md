@@ -2,11 +2,21 @@
 
 **CRM** ( Customer Relationship Management ) **客户关系管理系统**
 
+## 〇、个人备注
+
+| eclipse 功能 | 对应快捷键 |
+|:-:|:-:|
+| 添加注释 | **“Ctrl+Shift+/”** |
+| 消除注释 | **“Ctrl+Shift+\”** |
+| 格式化代码 | **“Ctrl+Shift+F”** |
+| Getters、Setters、toString(） | **“Alt+Shift+S”** |
+
 ## 一、环境准备
 
 - Eclipse Java EE IDE for Web Developers. 【 Version: Oxygen.1a Release (4.7.1a) 】
 - [Apache Tomcat 9.0.10](http://mirrors.hust.edu.cn/apache/tomcat/tomcat-9/v9.0.10/bin/apache-tomcat-9.0.10-windows-x64.zip)
 - MySQL 5.7.20 
+- jdk 1.8
 
 ## 二、项目环境搭建
 
@@ -14,11 +24,7 @@
 	用户名：root
 	密码：root
 	包名：com.devyy.*
-
-> 添加注释： **“Ctrl+Shift+/”**    
-> 消除注释： **“Ctrl+Shift+\”**    
-> 格式化代码： **“Ctrl+Shift+F”**    
-> Getters、Setters、toString(）： **“Alt+Shift+S”**   
+ 
 
 
 1. 新建 **Dynamic Web Project”** 项目。
@@ -446,35 +452,43 @@
 
 1. 编辑 **register.jsp** 页面。
 
+
+		<head>		
+		···		
 		<!-- 引入 jQuery 库 -->
-		<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.4.4.min.js"></script>
+		<script type="text/javascript"
+			src="${pageContext.request.contextPath}/js/jquery-1.4.4.min.js"></script>		
+		···		
+		</head>
 
-
-		<form action="${pageContext.request.contextPath}/user_regist.action"
-			method="post" onsubmit="return checkForm()">
-	
-			<div class="main">
-				<div class="mainin">
-					<div class="mainin1">
-						<ul>
-							<li><span>用户名：</span> <input name="user_name" type="text"
-								id="user_name" onblur="checkCode()" class="SearchKeyword" /> <span
-								id="userNameSpan" style="FONT-WEIGHT: bold; COLOR: red"></span></li>
-							<li><span>密码：</span> <input type="password"
-								name="user_password" id="user_password" class="SearchKeyword2" />
-								<span id="passwordSpan" style="FONT-WEIGHT: bold; COLOR: red"></span>
-							</li>
-							<li><button class="tijiao" type="submit">马上注册</button></li>
-						</ul>
-					</div>
-					<div class="footpage">
-						<span style="" font-family:arial;""="">Copyright ?</span>2018 <a
-							href="http://www.baidu.com/" target="_blank">客户信息管理平台</a> － 也许很好用
+		<body>
+			<form action="${pageContext.request.contextPath}/user_regist.action"
+				method="post" onsubmit="return checkForm()">
+		
+				<div class="main">
+					<div class="mainin">
+						<div class="mainin1">
+							<ul>
+								<li><span>用户名：</span> <input name="user_name" type="text"
+									id="user_name" onblur="checkCode()" class="SearchKeyword" /> <span
+									id="userNameSpan" style="FONT-WEIGHT: bold; COLOR: red"></span></li>
+								<li><span>密码：</span> <input type="password"
+									name="user_password" id="user_password" class="SearchKeyword2" />
+									<span id="passwordSpan" style="FONT-WEIGHT: bold; COLOR: red"></span>
+								</li>
+								<li><button class="tijiao" type="submit">马上注册</button></li>
+							</ul>
+						</div>
+						<div class="footpage">
+							<span style="" font-family:arial;""="">Copyright ?</span>2018 <a
+								href="http://www.baidu.com/" target="_blank">客户信息管理平台</a> － 也许很好用
+						</div>
 					</div>
 				</div>
-			</div>
-		</form>
-
+			</form>
+			···
+		</body>
+		
 2. 编辑 **UserAction** 类，添加 **checkCode()** 方法。
 
 	因为我们是模型注入方式，所以我们不需要再接收数据了，因为模型已经自动帮我们封装好数据了，直接调用 service 层来操作即可。
@@ -1033,28 +1047,27 @@
 2. 创建数据表 **`cst_customer`**
 
 		CREATE TABLE `cst_customer` (
-		  `cust_id` bigint(32) NOT NULL AUTO_INCREMENT COMMENT '客户编号(主键)',
-		  `cust_name` varchar(32) NOT NULL COMMENT '客户名称(公司名称)',
-		  `cust_user_id` bigint(32) DEFAULT NULL COMMENT '负责人id',
-		  `cust_create_id` bigint(32) DEFAULT NULL COMMENT '创建人id',
-		  `cust_source` varchar(32) DEFAULT NULL COMMENT '客户信息来源',
-		  `cust_industry` varchar(32) DEFAULT NULL COMMENT '客户所属行业',
-		  `cust_level` varchar(32) DEFAULT NULL COMMENT '客户级别',
-		  `cust_linkman` varchar(64) DEFAULT NULL COMMENT '联系人',
-		  `cust_phone` varchar(64) DEFAULT NULL COMMENT '固定电话',
-		  `cust_mobile` varchar(16) DEFAULT NULL COMMENT '移动电话',
-		  PRIMARY KEY (`cust_id`)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-		
+				  `cust_id` bigint(32) NOT NULL AUTO_INCREMENT COMMENT '客户编号(主键)',
+				  `cust_name` varchar(32) NOT NULL COMMENT '客户名称(公司名称)',
+				  `cust_user_id` bigint(32) DEFAULT NULL COMMENT '负责人id',
+				  `cust_create_id` bigint(32) DEFAULT NULL COMMENT '创建人id',
+				  `cust_source` varchar(32) DEFAULT NULL COMMENT '客户信息来源',
+				  `cust_industry` varchar(32) DEFAULT NULL COMMENT '客户所属行业',
+				  `cust_level` varchar(32) DEFAULT NULL COMMENT '客户级别',
+				  `cust_linkman` varchar(64) DEFAULT NULL COMMENT '联系人',
+				  `cust_phone` varchar(64) DEFAULT NULL COMMENT '固定电话',
+				  `cust_mobile` varchar(16) DEFAULT NULL COMMENT '移动电话',
+				  PRIMARY KEY (`cust_id`)
+				) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;		
 
-3. 编辑 **struts.xml** 文件。
+3. 编辑 **struts.xml** 文件
 
 		<!-- 配置客户的Action，如果Action由Spring框架来管理，class标签上只需要编写ID值就OK -->
 		<action name="customer_*" class="customerAction" method="{1}">
 			<result name="page">/jsp/customer/list.jsp</result>
 		</action>
 
-4. 编辑 **applicationContext.xml** 文件。
+4. 编辑 **applicationContext.xml** 文件
 
 		<!-- 引入映射的配置文件 -->
 		<property name="mappingResources">
@@ -1254,7 +1267,7 @@
 		<value>com/devyy/domain/Dict.hbm.xml</value>
 
 
-----
+---- 
 
 
 
