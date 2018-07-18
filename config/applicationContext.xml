@@ -39,6 +39,8 @@
 		<property name="mappingResources">
 			<list>
 				<value>com/devyy/domain/User.hbm.xml</value>
+				<value>com/devyy/domain/Customer.hbm.xml</value>
+				<value>com/devyy/domain/Dict.hbm.xml</value>
 			</list>
 		</property>
 	</bean>
@@ -52,17 +54,17 @@
 	<tx:annotation-driven transaction-manager="transactionManager"/>
 	
 	<!-- 配置客户模块 -->
-	<!-- <bean id="customerAction" class="com.itheima.web.action.CustomerAction" scope="prototype">
+	<bean id="customerAction" class="com.devyy.action.CustomerAction" scope="prototype">
 		<property name="customerService" ref="customerService"/>
 	</bean>
 	
-	<bean id="customerService" class="com.itheima.service.CustomerServiceImpl">
+	<bean id="customerService" class="com.devyy.service.impl.CustomerServiceImpl">
 		<property name="customerDao" ref="customerDao"/>
 	</bean>
 	
-	<bean id="customerDao" class="com.itheima.dao.CustomerDaoImpl">
+	<bean id="customerDao" class="com.devyy.dao.impl.CustomerDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory"/>
-	</bean> -->
+	</bean>
 	
 	<!-- 配置用户的模块 -->
 	<bean id="userAction" class="com.devyy.action.UserAction" scope="prototype">

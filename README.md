@@ -769,6 +769,497 @@
 
 ---
 
+## 七、客户模块-搭建环境
+
+1. 拷贝相关文件。
+		
+	- **Customer** 类
+	
+			package com.devyy.domain;
+			
+			import java.io.Serializable;
+			
+			public class Customer implements Serializable {
+			
+			private static final long serialVersionUID = 1L;
+				
+				private Integer cust_id; 		// 客户编号(主键)
+				private String cust_name; 		// 客户名称(公司名称)
+				private Integer cust_user_id; 	// 负责人id
+				private Integer cust_create_id; // 创建人id
+				private String cust_source; 	// 客户信息来源
+				private String cust_industry; 	// 客户所属行业
+				private String cust_level; 		// 客户级别
+				private String cust_linkman; 	// 联系人
+				private String cust_phone; 		// 固定电话
+				private String cust_mobile; 	// 移动电话
+			
+				public Integer getCust_id() {
+					return cust_id;
+				}
+			
+				public void setCust_id(Integer cust_id) {
+					this.cust_id = cust_id;
+				}
+			
+				public String getCust_name() {
+					return cust_name;
+				}
+			
+				public void setCust_name(String cust_name) {
+					this.cust_name = cust_name;
+				}
+			
+				public Integer getCust_user_id() {
+					return cust_user_id;
+				}
+			
+				public void setCust_user_id(Integer cust_user_id) {
+					this.cust_user_id = cust_user_id;
+				}
+			
+				public Integer getCust_create_id() {
+					return cust_create_id;
+				}
+			
+				public void setCust_create_id(Integer cust_create_id) {
+					this.cust_create_id = cust_create_id;
+				}
+			
+				public String getCust_source() {
+					return cust_source;
+				}
+			
+				public void setCust_source(String cust_source) {
+					this.cust_source = cust_source;
+				}
+			
+				public String getCust_industry() {
+					return cust_industry;
+				}
+			
+				public void setCust_industry(String cust_industry) {
+					this.cust_industry = cust_industry;
+				}
+			
+				public String getCust_level() {
+					return cust_level;
+				}
+			
+				public void setCust_level(String cust_level) {
+					this.cust_level = cust_level;
+				}
+			
+				public String getCust_linkman() {
+					return cust_linkman;
+				}
+			
+				public void setCust_linkman(String cust_linkman) {
+					this.cust_linkman = cust_linkman;
+				}
+			
+				public String getCust_phone() {
+					return cust_phone;
+				}
+			
+				public void setCust_phone(String cust_phone) {
+					this.cust_phone = cust_phone;
+				}
+			
+				public String getCust_mobile() {
+					return cust_mobile;
+				}
+			
+				public void setCust_mobile(String cust_mobile) {
+					this.cust_mobile = cust_mobile;
+				}
+			
+				@Override
+				public String toString() {
+					return "Customer [cust_id=" + cust_id + ", cust_name=" + cust_name + ", cust_user_id=" + cust_user_id
+							+ ", cust_create_id=" + cust_create_id + ", cust_source=" + cust_source + ", cust_industry="
+							+ cust_industry + ", cust_level=" + cust_level + ", cust_linkman=" + cust_linkman + ", cust_phone="
+							+ cust_phone + ", cust_mobile=" + cust_mobile + "]";
+				}
+			
+			}
+	
+	- **Customer.hbm.xml** 映射配置文件
+
+			<?xml version="1.0" encoding="UTF-8"?>
+			<!DOCTYPE hibernate-mapping PUBLIC 
+			    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+			    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+			    
+				<hibernate-mapping>
+				
+				<class name="com.devyy.domain.Customer" table="cst_customer">
+					<id name="cust_id" column="cust_id">
+						<generator class="native"/>
+					</id>
+					
+					<property name="cust_name" column="cust_name"/>
+					<property name="cust_user_id" column="cust_user_id"/>
+					<property name="cust_create_id" column="cust_create_id"/>
+					<property name="cust_source" column="cust_source"/>
+					<property name="cust_industry" column="cust_industry"/>
+					<property name="cust_level" column="cust_level"/>
+					<property name="cust_linkman" column="cust_linkman"/>
+					<property name="cust_phone" column="cust_phone"/>
+					<property name="cust_mobile" column="cust_mobile"/>
+					
+				</class>
+		
+			</hibernate-mapping>    
+
+	- **CustomerAction** 类
+
+			package com.devyy.action;
+			
+			import com.devyy.domain.Customer;
+			import com.devyy.service.CustomerService;
+			import com.opensymphony.xwork2.ActionSupport;
+			import com.opensymphony.xwork2.ModelDriven;
+			
+			public class CustomerAction extends ActionSupport implements ModelDriven<Customer> {
+			
+			private Customer customer = new Customer();
+				
+				private CustomerService customerService;
+				
+				public void setCustomerService(CustomerService customerService) {
+					this.customerService = customerService;
+				}
+			
+				@Override
+				public Customer getModel() {
+					// 返回自动封装的数据
+					return customer;
+				}
+				
+				// 添加客户
+				public String add(){
+					
+					// 调用 service 进行添加操作
+					customerService.add(customer);
+					
+					return NONE;
+				}
+				
+				
+				// 编辑客户
+				
+				
+				// 展示所有客户
+			
+			}
+
+
+	- **CustomerDao** 接口类
+
+			package com.devyy.dao;
+
+			import com.devyy.domain.Customer;
+			
+			public interface CustomerDao {
+			
+				public void add(Customer customer);
+			
+			}
+
+	- **CustomerDaoImpl** 实现类
+
+			package com.devyy.dao.impl;
+			
+			import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
+			
+			import com.devyy.dao.CustomerDao;
+			import com.devyy.domain.Customer;
+			
+			public class CustomerDaoImpl extends HibernateDaoSupport implements CustomerDao {
+			
+				@Override
+				public void add(Customer customer) {
+					
+					this.getHibernateTemplate().save(customer);
+					
+				}
+			
+			}
+
+
+	- **CustomerService** 接口类
+
+			package com.devyy.service;
+			
+			import com.devyy.domain.Customer;
+			
+			public interface CustomerService {
+			
+				public void add(Customer customer);
+			
+			}
+
+
+	- **CustomerServiceImpl** 实现类
+
+			package com.devyy.service.impl;
+			
+			import com.devyy.dao.CustomerDao;
+			import com.devyy.domain.Customer;
+			import com.devyy.service.CustomerService;
+			
+			public class CustomerServiceImpl implements CustomerService {
+			
+				private CustomerDao customerDao;
+				
+				public void setCustomerDao(CustomerDao customerDao) {
+					this.customerDao = customerDao;
+				}
+			
+				/* 
+				 * 添加客户
+				 */
+				@Override
+				public void add(Customer customer) {
+					
+					customerDao.add(customer);
+					
+				}
+			
+			}
+
+	
+2. 创建数据表 **`cst_customer`**
+
+		CREATE TABLE `cst_customer` (
+		  `cust_id` bigint(32) NOT NULL AUTO_INCREMENT COMMENT '客户编号(主键)',
+		  `cust_name` varchar(32) NOT NULL COMMENT '客户名称(公司名称)',
+		  `cust_user_id` bigint(32) DEFAULT NULL COMMENT '负责人id',
+		  `cust_create_id` bigint(32) DEFAULT NULL COMMENT '创建人id',
+		  `cust_source` varchar(32) DEFAULT NULL COMMENT '客户信息来源',
+		  `cust_industry` varchar(32) DEFAULT NULL COMMENT '客户所属行业',
+		  `cust_level` varchar(32) DEFAULT NULL COMMENT '客户级别',
+		  `cust_linkman` varchar(64) DEFAULT NULL COMMENT '联系人',
+		  `cust_phone` varchar(64) DEFAULT NULL COMMENT '固定电话',
+		  `cust_mobile` varchar(16) DEFAULT NULL COMMENT '移动电话',
+		  PRIMARY KEY (`cust_id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		
+
+3. 编辑 **struts.xml** 文件。
+
+		<!-- 配置客户的Action，如果Action由Spring框架来管理，class标签上只需要编写ID值就OK -->
+		<action name="customer_*" class="customerAction" method="{1}">
+			<result name="page">/jsp/customer/list.jsp</result>
+		</action>
+
+4. 编辑 **applicationContext.xml** 文件。
+
+		<!-- 引入映射的配置文件 -->
+		<property name="mappingResources">
+			<list>
+				...
+				<value>com/devyy/domain/Customer.hbm.xml</value>
+				...
+			</list>
+		</property>
+
+		<!-- 配置客户模块 -->
+		<bean id="customerAction" class="com.devyy.action.CustomerAction" scope="prototype">
+		<property name="customerService" ref="customerService"/>
+		</bean>
+		
+		<bean id="customerService" class="com.devyy.service.impl.CustomerServiceImpl">
+			<property name="customerDao" ref="customerDao"/>
+		</bean>
+		
+		<bean id="customerDao" class="com.devyy.dao.impl.CustomerDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+
+
+## 八、客户模块-字典表的引入
+
+1. 新建数据表：**`crm_base_dict.sql`**
+
+		CREATE TABLE `base_dict` (
+					`dict_id` varchar(32) NOT NULL COMMENT '数据字典id(主键)',
+					`dict_type_code` varchar(10) NOT NULL COMMENT '数据字典类别代码',
+					`dict_type_name` varchar(64) NOT NULL COMMENT '数据字典类别名称',
+					`dict_item_name` varchar(64) NOT NULL COMMENT '数据字典项目名称',
+					`dict_item_code` varchar(10) DEFAULT NULL COMMENT '数据字典项目(可为空)',
+					`dict_sort` int(10) DEFAULT NULL COMMENT '排序字段',
+					`dict_enable` char(1) NOT NULL COMMENT '1:使用 0:停用',
+					`dict_memo` varchar(64) DEFAULT NULL COMMENT '备注',
+					PRIMARY KEY (`dict_id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	
+		insert  into `base_dict`(`dict_id`,`dict_type_code`,`dict_type_name`,`dict_item_name`,
+		`dict_item_code`,`dict_sort`,`dict_enable`,`dict_memo`) 
+				values ('1','001','客户行业','教育培训 ',NULL,1,'1',NULL),
+					('10','003','公司性质','民企',NULL,3,'1',NULL),
+					('12','004','年营业额','1-10万',NULL,1,'1',NULL),
+					('13','004','年营业额','10-20万',NULL,2,'1',NULL),
+					('14','004','年营业额','20-50万',NULL,3,'1',NULL),
+					('15','004','年营业额','50-100万',NULL,4,'1',NULL),
+					('16','004','年营业额','100-500万',NULL,5,'1',NULL),
+					('17','004','年营业额','500-1000万',NULL,6,'1',NULL),
+					('18','005','客户状态','基础客户',NULL,1,'1',NULL),
+					('19','005','客户状态','潜在客户',NULL,2,'1',NULL),
+					('2','001','客户行业','电子商务',NULL,2,'1',NULL),
+					('20','005','客户状态','成功客户',NULL,3,'1',NULL),
+					('21','005','客户状态','无效客户',NULL,4,'1',NULL),
+					('22','006','客户级别','普通客户',NULL,1,'1',NULL),
+					('23','006','客户级别','VIP客户',NULL,2,'1',NULL),
+					('24','007','商机状态','意向客户',NULL,1,'1',NULL),	
+					('25','007','商机状态','初步沟通',NULL,2,'1',NULL),
+					('26','007','商机状态','深度沟通',NULL,3,'1',NULL),
+					('27','007','商机状态','签订合同',NULL,4,'1',NULL),
+					('3','001','客户行业','对外贸易',NULL,3,'1',NULL),
+					('30','008','商机类型','新业务',NULL,1,'1',NULL),
+					('31','008','商机类型','现有业务',NULL,2,'1',NULL),
+					('32','009','商机来源','电话营销',NULL,1,'1',NULL),
+					('33','009','商机来源','网络营销',NULL,2,'1',NULL),
+					('34','009','商机来源','推广活动',NULL,3,'1',NULL),
+					('4','001','客户行业','酒店旅游',NULL,4,'1',NULL),
+					('5','001','客户行业','房地产',NULL,5,'1',NULL),
+					('6','002','客户信息来源','电话营销',NULL,1,'1',NULL),
+					('7','002','客户信息来源','网络营销',NULL,2,'1',NULL),
+					('8','003','公司性质','合资',NULL,1,'1',NULL),
+					('9','003','公司性质','国企',NULL,2,'1',NULL);
+
+## 九、客户模块-字典的配置文件编写
+
+1. 新建 **Dict** 类，字典表类。
+
+		package com.devyy.domain;
+		
+		import java.io.Serializable;
+		
+		public class Dict implements Serializable {
+		
+			private static final long serialVersionUID = 1L;	
+			
+			private Integer dict_id; 		// 数据字典id(主键)
+			private String dict_type_code; 	// 数据字典类别代码',
+			private String dict_type_name; 	// 数据字典类别名称',
+			private String dict_item_name; 	// 数据字典项目名称',
+			private String dict_item_code; 	// 数据字典项目(可为空)',
+			private Integer dict_sort; 		// 排序字段',
+			private String dict_enable; 	// 1:使用 0:停用',
+			private String dict_memo; 		// 备注
+		
+			public Integer getDict_id() {
+				return dict_id;
+			}
+		
+			public void setDict_id(Integer dict_id) {
+				this.dict_id = dict_id;
+			}
+		
+			public String getDict_type_code() {
+				return dict_type_code;
+			}
+		
+			public void setDict_type_code(String dict_type_code) {
+				this.dict_type_code = dict_type_code;
+			}
+		
+			public String getDict_type_name() {
+				return dict_type_name;
+			}
+		
+			public void setDict_type_name(String dict_type_name) {
+				this.dict_type_name = dict_type_name;
+			}
+		
+			public String getDict_item_name() {
+				return dict_item_name;
+			}
+		
+			public void setDict_item_name(String dict_item_name) {
+				this.dict_item_name = dict_item_name;
+			}
+		
+			public String getDict_item_code() {
+				return dict_item_code;
+			}
+		
+			public void setDict_item_code(String dict_item_code) {
+				this.dict_item_code = dict_item_code;
+			}
+		
+			public Integer getDict_sort() {
+				return dict_sort;
+			}
+		
+			public void setDict_sort(Integer dict_sort) {
+				this.dict_sort = dict_sort;
+			}
+		
+			public String getDict_enable() {
+				return dict_enable;
+			}
+		
+			public void setDict_enable(String dict_enable) {
+				this.dict_enable = dict_enable;
+			}
+		
+			public String getDict_memo() {
+				return dict_memo;
+			}
+		
+			public void setDict_memo(String dict_memo) {
+				this.dict_memo = dict_memo;
+			}
+		
+			@Override
+			public String toString() {
+				return "Dict [dict_id=" + dict_id + ", dict_type_code=" + dict_type_code + ", dict_type_name=" + dict_type_name
+						+ ", dict_item_name=" + dict_item_name + ", dict_item_code=" + dict_item_code + ", dict_sort="
+						+ dict_sort + ", dict_enable=" + dict_enable + ", dict_memo=" + dict_memo + "]";
+			}
+		
+		}
+
+2. 添加 **Dict.hbm.xml** 映射配置文件。
+
+		<?xml version="1.0" encoding="UTF-8"?>
+		<!DOCTYPE hibernate-mapping PUBLIC 
+		    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+		    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+		    
+		<hibernate-mapping>
+			
+			<class name="com.devyy.domain.Dict" table="base_dict">
+				<id name="dict_id" column="dict_id">
+					<generator class="native"/>
+				</id>
+				
+				<property name="dict_type_code" column="dict_type_code"/>
+				<property name="dict_type_name" column="dict_type_name"/>
+				<property name="dict_item_name" column="dict_item_name"/>
+				<property name="dict_item_code" column="dict_item_code"/>
+				<property name="dict_sort" column="dict_sort"/>
+				<property name="dict_enable" column="dict_enable"/>
+				<property name="dict_memo" column="dict_memo"/>
+				
+			</class>
+			
+		</hibernate-mapping>    
+
+3. 编辑 **applicationContext.xml** 文件，配置映射文件。
+
+		<value>com/devyy/domain/Dict.hbm.xml</value>
+
+
+----
+
+
+
+
+
 
 
 
