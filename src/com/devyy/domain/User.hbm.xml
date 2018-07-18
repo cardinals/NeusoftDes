@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+			<!DOCTYPE hibernate-mapping PUBLIC 
+			    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+			    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="com.devyy.domain.User" table="sys_user">
+
+		<id name="user_id" column="user_id" type="java.lang.Long">
+			<generator class="native" />
+		</id>
+
+		<property name="user_code" column="user_code" type="java.lang.String"/>
+		<property name="user_name" column="user_name" type="java.lang.String"/>
+		<property name="user_password" column="user_password" type="java.lang.String"/>
+		<property name="user_state" column="user_state" type="java.lang.String"/>
+
+	</class>
+
+</hibernate-mapping>  		
